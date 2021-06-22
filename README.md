@@ -7,6 +7,15 @@ A "self-hosted", serverless web-scraper for GitHub profiles. A middle-man betwee
 
 ## Developers!
 
+### Notes
+
+- We wil use TypeScript.
+- Modulularize your code, we will integrate later.
+- All code to be written within `functions/src`. Treat it as the root directory.
+- Ask if not sure.
+- DO NOT rename the `functions` directory.
+
+
 This repository is "self-hosted", by this I mean you will have to set up a Firebase Account and deploy the functions on your account. Here is how you can do so:
 
 ### Create a Firebase project
