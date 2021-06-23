@@ -62,64 +62,67 @@ function _getPage(config: Config): Promise<string> {
  * @param config Configuration object
  * @returns An array of tags and thir values
  */
-export async function scrape(config: Config): Promise<Result[]> {
+export async function scrape(config: Config): Promise<Result> {
   // Get page as HTML string
   const page: string = await _getPage(config);
-
-  //Load the page with cheerio
   const $ = cheerio.load(page);
+  const scrapedData: Result = {};
 
-  const results: Result[] = [];
-  // ...For each selector
-  for (let selector in config.selectors) {
-    const obj = config.selectors[selector];
+  // For each selector =
+  for (const selector in config.selectors) {
+    // get all the elements found in the page
+    // basically document.querySelectorAll()
+    const img = $(config.selectors[selector])
+      .get()
+      // For each node found...
+      .map((n): Data => {
+        let data: Data = {
+          tag: undefined,
+          data: undefined,
+          attrs: undefined,
+        };
 
-    // ...get the element from the HTML
-    const element = $(obj);
+        // ...If it is a tag then get its data
+        if (n.type === "tag") {
+          //@ts-ignore
+          if (["img", "video"].includes(n.name)) {
+            //@ts-ignore
+            data.tag = n.name;
+            data.data = $(n).attr("src") || undefined;
 
-    // ...checks if there is atleast one result
-    if (element.length) {
+            //@ts-ignore
+          } else if (n.name === "a") {
+            //@ts-ignore
+            data.tag = n.name;
+            data.data = $(n).attr("href") || undefined;
+          } else {
+            //@ts-ignore
+            data.tag = n.name;
+            data.data = $(n).text().trim() || undefined;
+          }
+        }
 
-      // ...create a result
-      const result: Result = {
-        name: selector,
-        //@ts-ignore
-        type: element[0].name,
-      };
+        // If there are custom attributes requested
+        // then construct them
+        const customAttrs = selector.match("\\[(.*)]");
+        if (customAttrs) {
+          if (!data.attrs) data.attrs = {};
 
-      // ...get the data
-      if (["img", "video"].includes(result.type)) {
-        result.data = element.attr("src");
-      } else if (result.type === "a") {
-        result.data = element.attr("href");
-      } else {
-        result.data = element.text().trim();
-      }
+          const attributeNames = customAttrs[0].substring(customAttrs[0].lastIndexOf("[") + 1, customAttrs[0].lastIndexOf("]")).split(",");
 
-      // ...regex to check for empty string
-      if (/^\s*$/.test(result.data!)) {
-        result.data = undefined;
-      }
+          attributeNames.forEach((attribute) => {
+            const a = $(n).attr(attribute);
+            if (a) {
+              data.attrs![attribute] = a;
+            }
+          });
+        }
 
-      // ...push the result into the array
-      results.push(result);
-    }
+        return data;
+      });
 
-    // ...if no results are found, the selector name is returned with undefined data
-    else {
-      const result: Result = {
-        //@ts-ignore
-        name: selector,
-        type: selector.split('_')[0],
-        data: undefined,
-      };
-
-      // ...push the result into the array
-      results.push(result);
-    }
-
+    scrapedData[selector] = img;
   }
 
-  // Return the result
-  return results;
+  return scrapedData;
 }
