@@ -7,7 +7,7 @@
         "description": "div.user-profile-bio > div",
         "location": ".vcard-details li[itemprop=\"homeLocation\"]",
         "url": ".vcard-details li[itemprop=\"url\"]",
-        "email": "#js-pjax-container > div > div > div > div > div > div > ul > li[itemprop=\"email\"] > a",
+        "email": ".vcard-details li[itemprop=\"email\"]",
         "website" : "a[rel=\"nofollow me\"]",
         "orgs[data-hovercard-url,aria-label]": "[itemprop=\"follows\"]",
         "followers": "#js-pjax-container > div > div > div > div > div > div > div > div > a:nth-child(1) > span",
