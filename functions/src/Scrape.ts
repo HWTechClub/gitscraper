@@ -95,10 +95,15 @@ export async function scrape(config: Config): Promise<Result> {
             //@ts-ignore
             data.tag = n.name;
             data.data = $(n).attr("href") || undefined;
+            if (!data.attrs) {
+              data.attrs = {};
+              var innerText = $(n).text().trim()
+              if (innerText) data.attrs!['innerText'] = innerText;
+            }
           } else {
             //@ts-ignore
             data.tag = n.name;
-            data.data = $(n).text().trim() || undefined;
+            data.data = $(n).text().trim().replace(/\s+/g, " ") || undefined;
           }
         }
 
@@ -117,7 +122,7 @@ export async function scrape(config: Config): Promise<Result> {
             }
           });
         }
-
+        
         return data;
       });
 
