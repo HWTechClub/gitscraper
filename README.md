@@ -7,6 +7,10 @@ A "self-hosted", serverless web-scraper for GitHub profiles. A middle-man betwee
 
 ## Developers!
 
+### Running for `no-firebase` tasks
+
+Simply run `npm start` in the `functions` directory. Of course you'll have to run `npm install` once after cloning.
+
 ### Notes
 
 - We wil use TypeScript.
