@@ -62,40 +62,75 @@ function _getPage(config: Config): Promise<string> {
  * @param config Configuration object
  * @returns An array of tags and thir values
  */
-export async function scrape(config: Config): Promise<Result[]> {
+export async function scrape(config: Config): Promise<Result> {
   // Get page as HTML string
   const page: string = await _getPage(config);
-
-  //Load the page with cheerio
   const $ = cheerio.load(page);
+  const scrapedData: Result = {};
 
-  const results: Result[] = [];
-  // ...For each selector
-  for (let selector in config.selectors) {
-    const obj = config.selectors[selector];
+  // For each selector =
+  for (const selector in config.selectors) {
+    // get all the elements found in the page
+    // basically document.querySelectorAll()
+    const img = $(config.selectors[selector])
+      .get()
+      // For each node found...
+      .map((n): Data => {
+        let data: Data = {
+          tag: undefined,
+          data: undefined,
+          attrs: undefined,
+        };
 
-    // ...get the element from the HTML
-    const element = $(obj);
+        // ...If it is a tag then get its data
+        if (n.type === "tag") {
+          //@ts-ignore
+          if (["img", "video"].includes(n.name)) {
+            //@ts-ignore
+            data.tag = n.name;
+            data.data = $(n).attr("src") || undefined;
 
-    // ...create a result
-    const result: Result = {
-      //@ts-ignore
-      type: element[0].name,
-    };
+            //@ts-ignore
+          } else if (n.name === "a") {
+            //@ts-ignore
+            data.tag = n.name;
+            data.data = $(n).attr("href") || undefined;
+            if (!data.attrs) {
+              data.attrs = {};
+              // ...gets the inner text of an <a> tag and stips the leading and trailing whitespace
+              var innerText = $(n).text().trim()
+              // ...if after trim innerText contains any data, it is added to the attributes
+              if (innerText) data.attrs!['innerText'] = innerText;
+            }
+          } else {
+            //@ts-ignore
+            data.tag = n.name;
+            // ...trims leading and trailing whitespace, the regex replaces multiple continuous occurances of whitespace with a single space
+            data.data = $(n).text().trim().replace(/\s+/g, " ") || undefined;
+          }
+        }
 
-    // ...get the data
-    if (["img", "video"].includes(result.type)) {
-      result.data = element.attr("src");
-    } else if (result.type === "a") {
-      result.data = element.attr("href");
-    } else {
-      result.data = element.text().trim();
-    }
+        // If there are custom attributes requested
+        // then construct them
+        const customAttrs = selector.match("\\[(.*)]");
+        if (customAttrs) {
+          if (!data.attrs) data.attrs = {};
 
-    // ...push the result into the array
-    results.push(result);
+          const attributeNames = customAttrs[0].substring(customAttrs[0].lastIndexOf("[") + 1, customAttrs[0].lastIndexOf("]")).split(",");
+
+          attributeNames.forEach((attribute) => {
+            const a = $(n).attr(attribute);
+            if (a) {
+              data.attrs![attribute] = a;
+            }
+          });
+        }
+
+        return data;
+      });
+
+    scrapedData[selector] = img;
   }
 
-  // Return the result
-  return results;
+  return scrapedData;
 }

@@ -1,9 +1,22 @@
 {
     "user": "FarazzShaikh",
     "selectors": {
-        "img_profilePic": "#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-3.mb-4.mb-md-0 > div > div.clearfix.d-flex.d-md-block.flex-items-center.mb-4.mb-md-0 > div.position-relative.d-inline-block.col-2.col-md-12.mr-3.mr-md-0.flex-shrink-0 > a > img",
-        "span_name": "#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-3.mb-4.mb-md-0 > div > div.clearfix.d-flex.d-md-block.flex-items-center.mb-4.mb-md-0 > div.vcard-names-container.float-left.col-12.py-3.js-sticky.js-user-profile-sticky-fields > h1 > span.p-name.vcard-fullname.d-block.overflow-hidden",
-        "span_userName": "#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-3.mb-4.mb-md-0 > div > div.clearfix.d-flex.d-md-block.flex-items-center.mb-4.mb-md-0 > div.vcard-names-container.float-left.col-12.py-3.js-sticky.js-user-profile-sticky-fields > h1 > span.p-nickname.vcard-username.d-block",
-        "div_bio": "#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-3.mb-4.mb-md-0 > div > div.d-flex.flex-column > div.js-profile-editable-area.d-flex.flex-column.d-md-block > div.p-note.user-profile-bio.mb-3.js-user-profile-bio.f4 > div"
+        "img_profilePic": ".avatar.avatar-user.width-full",
+        "full_name": "#js-pjax-container > div > div > div > div > div > div > h1 > span:first-child",
+        "username": "#js-pjax-container > div > div > div > div > div > div > h1 > span:last-child",
+        "description": "div.user-profile-bio > div",
+        "location": ".vcard-details li[itemprop=\"homeLocation\"]",
+        "url": ".vcard-details li[itemprop=\"url\"]",
+        "email": ".vcard-details li[itemprop=\"email\"]",
+        "website" : "a[rel=\"nofollow me\"]",
+        "orgs[data-hovercard-url,aria-label]": "[itemprop=\"follows\"]",
+        "followers": "#js-pjax-container > div > div > div > div > div > div > div > div > a:nth-child(1) > span",
+        "following": "#js-pjax-container > div > div > div > div > div > div > div > div > a:nth-child(2) > span",
+        "stars": "#js-pjax-container > div > div > div > div > div > div > div > div > a:nth-child(3) > span",
+        "pinned_repo_urls": "#js-pjax-container > div > div > div > div:nth-child(2) > div > div:nth-child(1) > div > ol > li > div > div > div > a",
+        "pinned_repo_names": "#js-pjax-container > div > div > div > div:nth-child(2) > div > div:nth-child(1) > div > ol > li > div > div > div > a > span",
+        "yearly_contributions": "div.js-yearly-contributions > div > h2",
+        "organizations_contribued_to": "#user-activity-overview > div > div > nav > a",
+        "more_organizations_contribued_to":"#user-activity-overview > div > div.js-org-filter-links-container > nav > details > details-menu > div.select-menu-list > ul > li > a"
     }
 }
