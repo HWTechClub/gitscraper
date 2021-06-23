@@ -97,12 +97,15 @@ export async function scrape(config: Config): Promise<Result> {
             data.data = $(n).attr("href") || undefined;
             if (!data.attrs) {
               data.attrs = {};
+              // ...gets the inner text of an <a> tag and stips the leading and trailing whitespace
               var innerText = $(n).text().trim()
+              // ...if after trim innerText contains any data, it is added to the attributes
               if (innerText) data.attrs!['innerText'] = innerText;
             }
           } else {
             //@ts-ignore
             data.tag = n.name;
+            // ...trims leading and trailing whitespace, the regex replaces multiple continuous occurances of whitespace with a single space
             data.data = $(n).text().trim().replace(/\s+/g, " ") || undefined;
           }
         }
@@ -122,7 +125,7 @@ export async function scrape(config: Config): Promise<Result> {
             }
           });
         }
-        
+
         return data;
       });
 
