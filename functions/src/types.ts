@@ -7,5 +7,6 @@ type Config = {
 
 type Result = {
   type: string;
+  name: string;
   data?: string;
 };

@@ -77,23 +77,47 @@ export async function scrape(config: Config): Promise<Result[]> {
     // ...get the element from the HTML
     const element = $(obj);
 
-    // ...create a result
-    const result: Result = {
-      //@ts-ignore
-      type: element[0].name,
-    };
+    // ...checks if there is atleast one result
+    if (element.length) {
 
-    // ...get the data
-    if (["img", "video"].includes(result.type)) {
-      result.data = element.attr("src");
-    } else if (result.type === "a") {
-      result.data = element.attr("href");
-    } else {
-      result.data = element.text().trim();
+      // ...create a result
+      const result: Result = {
+        name: selector,
+        //@ts-ignore
+        type: element[0].name,
+      };
+
+      // ...get the data
+      if (["img", "video"].includes(result.type)) {
+        result.data = element.attr("src");
+      } else if (result.type === "a") {
+        result.data = element.attr("href");
+      } else {
+        result.data = element.text().trim();
+      }
+
+      // ...regex to check for empty string
+      if (/^\s*$/.test(result.data!)) {
+        result.data = undefined;
+      }
+
+      // ...push the result into the array
+      results.push(result);
     }
 
-    // ...push the result into the array
-    results.push(result);
+    // ...if no results are found, the selector name is returned with undefined data
+    else {
+      const result: Result = {
+        //@ts-ignore
+        name: selector,
+        type: selector.split('_')[0],
+        data: undefined,
+      };
+
+      // ...push the result into the array
+      results.push(result);
+    }
+
   }
 
   // Return the result
