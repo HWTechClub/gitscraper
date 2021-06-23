@@ -7,16 +7,7 @@
 import { promises as fs, existsSync } from "fs";
 import * as path from "path";
 
-type Selector = {
-  [key: string]: string;
-};
-
-type Config = {
-  user: string;
-  selectors?: Selector[];
-};
-
-const defaultSelectors: Selector[] = [];
+const defaultSelectors = {};
 
 /**
  * Reads and parses a config file. The file must be called

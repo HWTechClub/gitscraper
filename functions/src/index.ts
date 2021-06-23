@@ -1,5 +1,6 @@
 // import * as functions from "firebase-functions";
 import { readConfig } from "./Config";
+import { scrape } from "./Scrape";
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -10,5 +11,7 @@ import { readConfig } from "./Config";
 // });
 
 (async () => {
-  console.log(await readConfig());
+  const config: Config = await readConfig();
+  const p = await scrape(config);
+  console.log(p);
 })();
