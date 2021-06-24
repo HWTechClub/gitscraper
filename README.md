@@ -9,12 +9,12 @@ A "self-hosted", serverless web-scraper for GitHub profiles. A middle-man betwee
 
 ### Running for `no-firebase` tasks
 
-Simply run `npm start` in the `functions` directory. Of course you'll have to run `npm install` once after cloning.
+Simply run `npm start` in the `functions` directory. Of course, you'll have to run `npm install` once after cloning.
 
 ### Notes
 
-- We wil use TypeScript.
-- Modulularize your code, we will integrate later.
+- We will use TypeScript.
+- Modularize your code, we will integrate later.
 - All code to be written within `functions/src`. Treat it as the root directory.
 - Ask if not sure.
 - DO NOT rename the `functions` directory.
@@ -48,29 +48,30 @@ firebase login
 
 ### Test locally
 
-Fork and clone the repo, `cd` into it and run `npm i`.
-
-[Follow this guide](https://firebase.google.com/docs/functions/local-emulator)
-
-### Deploy the project
-
-Make a new file called `.firebaserc` and paste this into it:
-
 ```
-{
-  "projects": {
-    "default": "<<project-ID>>"
-  }
-}
+# > Fork the project
 
+$ git clone <your fork url>
+$ cd ./gitscraper
+$ git add upstream https://github.com/HWTechClub/gitscraper.git
+$ git fetch upstream
+
+$ cd functions
+$ firebase use --add
+# > Select the project you created
+
+# TO RUN EMULATOR
+$ npm serve 
+
+# TO RUN NODEJS MODE
+$ npm start 
+
+# TO CONTRIBUTE
+$ git checkout -b <feature_branch> upstream/main
+# > Make changes
+# > Commit to feature branch
+# > PR feature branch into upstream/main
 ```
-
-The project ID will be in your project settings. Then simply run
-
-```bash
-firebase deploy
-```
-
 
 ## Why?
 
