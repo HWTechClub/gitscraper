@@ -1,18 +1,21 @@
+interface Endpoint {
+  [key: string]: string | Endpoint;
+}
+
 type Config = {
-  user: string;
-  selectors: {
-    [key: string]: string;
-  };
+  url: string;
+  id: string;
+  endpoints: Endpoint;
 };
 
-type Data = {
+type NodeData = {
   tag?: string;
   data?: string;
-  attrs?: {
-    [key: string]: string;
+  attributes: {
+    [key: string]: string | undefined;
   };
 };
 
-type Result = {
-  [key: string]: Data[];
+type ScrapedData = {
+  [key: string]: NodeData[];
 };

@@ -16,9 +16,11 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
     "firebase-admin": "^9.8.0",
-    "firebase-functions": "^3.14.1"
+    "firebase-functions": "^3.14.1",
+    "whatwg-url": "^8.6.0"
   },
   "devDependencies": {
+    "@types/whatwg-url": "^8.2.0",
     "firebase-functions-test": "^0.2.0",
     "typescript": "^4.3.4"
   },

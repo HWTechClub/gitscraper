@@ -1,5 +1,8 @@
 import cheerio from "cheerio";
 import { request } from "https";
+import { URL } from "whatwg-url";
+
+import { deepMap, getAllAttributes } from "./Utils";
 
 /**
  * Gets the profile page using a https GET request
@@ -8,10 +11,12 @@ import { request } from "https";
  * @returns Response body as string
  */
 function _getPage(config: Config): Promise<string> {
+  const u = new URL(config.url);
+
   // Https request options
   const options = {
-    hostname: "github.com",
-    path: `/${config.user}`,
+    hostname: u.hostname,
+    path: u.pathname,
     method: "GET",
     port: "443",
     headers: {
@@ -62,75 +67,65 @@ function _getPage(config: Config): Promise<string> {
  * @param config Configuration object
  * @returns An array of tags and thir values
  */
-export async function scrape(config: Config): Promise<Result> {
-  // Get page as HTML string
+export async function scrape(config: Config): Promise<ScrapedData> {
   const page: string = await _getPage(config);
   const $ = cheerio.load(page);
-  const scrapedData: Result = {};
 
-  // For each selector =
-  for (const selector in config.selectors) {
-    // get all the elements found in the page
-    // basically document.querySelectorAll()
-    const img = $(config.selectors[selector])
-      .get()
-      // For each node found...
-      .map((n): Data => {
-        let data: Data = {
-          tag: undefined,
+  const o: ScrapedData = deepMap(config.endpoints, (endpoint: string, key: string) => {
+    const nodes = $(endpoint).get();
+    const results: NodeData[] = [];
+
+    const key_split = key.split("[");
+
+    nodes.forEach((n) => {
+      if (n.type === "tag") {
+        const node = $(n);
+        const nodeData: NodeData = {
+          //@ts-ignore
+          tag: n.name,
           data: undefined,
-          attrs: undefined,
+          attributes: {},
         };
 
-        // ...If it is a tag then get its data
-        if (n.type === "tag") {
+        //@ts-ignore
+        if (["img", "video"].includes(n.name)) {
+          nodeData.attributes["src"] = node.attr("src") || undefined;
           //@ts-ignore
-          if (["img", "video"].includes(n.name)) {
-            //@ts-ignore
-            data.tag = n.name;
-            data.data = $(n).attr("src") || undefined;
+        } else if (n.name === "a") {
+          nodeData.attributes["href"] = node.attr("href") || undefined;
+        }
 
-            //@ts-ignore
-          } else if (n.name === "a") {
-            //@ts-ignore
-            data.tag = n.name;
-            data.data = $(n).attr("href") || undefined;
-            if (!data.attrs) {
-              data.attrs = {};
-              // ...gets the inner text of an <a> tag and stips the leading and trailing whitespace
-              var innerText = $(n).text().trim()
-              // ...if after trim innerText contains any data, it is added to the attributes
-              if (innerText) data.attrs!['innerText'] = innerText;
+        nodeData.data = node.text().trim();
+
+        if (key_split[1]) {
+          const attrs = key_split[1].split("]")[0].split(",");
+
+          for (let i = 0; i < attrs.length; i++) {
+            const a = attrs[i];
+
+            if (a === "*") {
+              const all = getAllAttributes(n);
+              all.forEach((_a: any) => {
+                nodeData.attributes[_a.name] = _a.value;
+              });
+              break;
             }
-          } else {
-            //@ts-ignore
-            data.tag = n.name;
-            // ...trims leading and trailing whitespace, the regex replaces multiple continuous occurances of whitespace with a single space
-            data.data = $(n).text().trim().replace(/\s+/g, " ") || undefined;
+
+            nodeData.attributes[a] = node.attr(a) || undefined;
           }
         }
 
-        // If there are custom attributes requested
-        // then construct them
-        const customAttrs = selector.match("\\[(.*)]");
-        if (customAttrs) {
-          if (!data.attrs) data.attrs = {};
+        results.push(nodeData);
+      }
+    });
 
-          const attributeNames = customAttrs[0].substring(customAttrs[0].lastIndexOf("[") + 1, customAttrs[0].lastIndexOf("]")).split(",");
+    const key_actual = key_split[0];
 
-          attributeNames.forEach((attribute) => {
-            const a = $(n).attr(attribute);
-            if (a) {
-              data.attrs![attribute] = a;
-            }
-          });
-        }
+    return {
+      val: results,
+      key: key_actual,
+    };
+  });
 
-        return data;
-      });
-
-    scrapedData[selector] = img;
-  }
-
-  return scrapedData;
+  return o;
 }
