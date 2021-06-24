@@ -48,13 +48,12 @@ firebase login
 
 ### Test locally
 
-```
+```sh
 # > Fork the project
 
 $ git clone <your fork url>
 $ cd ./gitscraper
 $ git add upstream https://github.com/HWTechClub/gitscraper.git
-$ git fetch upstream
 
 $ cd functions
 $ firebase use --add
@@ -67,6 +66,7 @@ $ npm serve
 $ npm start 
 
 # TO CONTRIBUTE
+$ git fetch upstream
 $ git checkout -b <feature_branch> upstream/main
 # > Make changes
 # > Commit to feature branch
