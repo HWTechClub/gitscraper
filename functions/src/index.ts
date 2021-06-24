@@ -1,19 +1,52 @@
-// import * as functions from "firebase-functions";
+import * as functions from "firebase-functions";
 import { readConfig } from "./Config";
 import { scrape } from "./Scrape";
+
+import admin from "firebase-admin";
+
+async function getData() {
+  const config: Config = await readConfig();
+  const p = await scrape(config);
+
+  return {
+    [config.id]: p,
+  };
+}
+
+async function writeData(data: { [key: string]: ScrapedData }) {
+  try {
+    admin.initializeApp();
+
+    console.log("Firebase Admin initialized.");
+
+    const db = admin.database();
+    const user = "UserA";
+    const ref = db.ref(`/`);
+
+    console.log("Writing to DB.");
+
+    const userRef = ref.child(user);
+    await userRef.set(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", { structuredData: true });
-//   response.send("Hello from Firebase!");
-// });
+export const Scrape = functions.https.onRequest(async (request, response) => {
+  console.log("Scraping Data.");
+  const data = await getData();
+  console.log("Scraping Done.");
+  console.log("Writing Data");
+  await writeData(data);
+  console.log("Finish.");
+  response.send("Finish");
+  admin.app().delete();
+});
 
 (async () => {
-  const config: Config = await readConfig();
-  const p = await scrape(config);
-  // console.log(p);
-  // ...stringify the structure for a pretty print of the data scraped
-  console.log(JSON.stringify(p, null, 4));
+  const data = await getData();
+  console.log(data);
 })();

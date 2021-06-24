@@ -89,10 +89,10 @@ export async function scrape(config: Config): Promise<ScrapedData> {
 
         //@ts-ignore
         if (["img", "video"].includes(n.name)) {
-          nodeData.attributes["src"] = node.attr("src") || undefined;
+          if (node.attr("src")) nodeData.attributes["src"] = node.attr("src");
           //@ts-ignore
         } else if (n.name === "a") {
-          nodeData.attributes["href"] = node.attr("href") || undefined;
+          if (node.attr("href")) nodeData.attributes["href"] = node.attr("href");
         }
 
         nodeData.data = node.text().trim();
@@ -111,7 +111,7 @@ export async function scrape(config: Config): Promise<ScrapedData> {
               break;
             }
 
-            nodeData.attributes[a] = node.attr(a) || undefined;
+            if (node.attr(a)) nodeData.attributes[a] = node.attr(a);
           }
         }
 
