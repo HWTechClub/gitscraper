@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd functions && npm install && npm run build",
     "test": "jest"
   },
   "keywords": [],
