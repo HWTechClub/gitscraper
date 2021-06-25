@@ -24,3 +24,9 @@ export function deepMap(obj: any, cb: any) {
 export function getAllAttributes(node: any) {
   return node.attributes || Object.keys(node.attribs).map((name) => ({ name, value: node.attribs[name] }));
 }
+
+export function objectGet(obj: any, key: string[], i: number): any {
+  if (i > key.length) return [];
+  if (Array.isArray(obj[key[i]])) return obj[key[i]];
+  return objectGet(obj[key[i]], key, ++i);
+}

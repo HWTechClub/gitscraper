@@ -16,6 +16,6 @@ type NodeData = {
   };
 };
 
-type ScrapedData = {
-  [key: string]: NodeData[];
-};
+interface ScrapedData {
+  [key: string]: ScrapedData | NodeData[];
+}

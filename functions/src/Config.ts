@@ -5,15 +5,14 @@
  */
 
 import { promises as fs, existsSync } from "fs";
-import * as path from "path";
 
 /**
  * Reads and parses a config file. The file must be called
  * `gitscraper.json` and be in the root directory.
  * @returns {Config} A config object
  */
-export async function readConfig(): Promise<Config> {
-  const p = path.resolve(__dirname, "../gitscraper.json");
+export async function readConfig(path: string): Promise<Config> {
+  const p = path;
 
   if (existsSync(p)) {
     const config: Config = JSON.parse(await fs.readFile(p, "utf8"));

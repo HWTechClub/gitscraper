@@ -1,11 +1,12 @@
 import * as functions from "firebase-functions";
 import { readConfig } from "./Config";
 import { scrape } from "./Scrape";
+import { join } from "path";
 
 import admin from "firebase-admin";
 
 async function getData() {
-  const config: Config = await readConfig();
+  const config: Config = await readConfig(join(__dirname, "../gitscraper.json"));
   const p = await scrape(config);
 
   return {
