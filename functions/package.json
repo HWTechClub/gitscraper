@@ -15,7 +15,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
-    "firebase-admin": "^9.8.0",
+    "firebase-admin": "^11.4.1",
     "firebase-functions": "^3.14.1",
     "whatwg-url": "^8.6.0"
   },
